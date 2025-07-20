@@ -1,0 +1,199 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local SeedPackController = require(ReplicatedStorage.Modules.SeedPackController)
+local SeedPackData = require(ReplicatedStorage.Data.SeedPackData)
+
+-- Rainbow color sequence
+local rainbowColors = {
+    Color3.fromRGB(255, 0, 0),    -- Red
+    Color3.fromRGB(255, 127, 0),  -- Orange
+    Color3.fromRGB(255, 255, 0),  -- Yellow
+    Color3.fromRGB(0, 255, 0),    -- Green
+    Color3.fromRGB(0, 0, 255),    -- Blue
+    Color3.fromRGB(75, 0, 130),   -- Indigo
+    Color3.fromRGB(148, 0, 211)   -- Violet
+}
+
+-- Main GUI
+local ScreenGui = Instance.new("ScreenGui", playerGui)
+ScreenGui.Name = "Blacked88SeedSpawnerGUI"
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.Position = UDim2.new(0.4, 0, 0.35, 0)
+Frame.Size = UDim2.new(0, 300, 0, 220)
+Frame.Active = true
+Frame.Draggable = true
+Frame.BorderSizePixel = 0
+
+local UICorner = Instance.new("UICorner", Frame)
+UICorner.CornerRadius = UDim.new(0, 16)
+
+-- Rainbow border effect
+local border = Instance.new("Frame", Frame)
+border.BackgroundColor3 = Color3.new(1, 1, 1)
+border.Size = UDim2.new(1, 0, 1, 0)
+border.ZIndex = 0
+border.BorderSizePixel = 0
+local borderCorner = Instance.new("UICorner", border)
+borderCorner.CornerRadius = UDim.new(0, 16)
+
+local innerFrame = Instance.new("Frame", Frame)
+innerFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+innerFrame.Position = UDim2.new(0.02, 0, 0.02, 0)
+innerFrame.Size = UDim2.new(0.96, 0, 0.96, 0)
+innerFrame.BorderSizePixel = 0
+Instance.new("UICorner", innerFrame).CornerRadius = UDim.new(0, 14)
+
+-- Animate the rainbow border
+task.spawn(function()
+    local i = 1
+    while true do
+        local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
+        local tween = TweenService:Create(border, tweenInfo, {BackgroundColor3 = rainbowColors[i]})
+        tween:Play()
+        
+        i = i + 1
+        if i > #rainbowColors then
+            i = 1
+        end
+        task.wait(1)
+    end
+end)
+
+-- Title Box
+local TitleBox = Instance.new("TextLabel", Frame)
+TitleBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TitleBox.BackgroundTransparency = 0.4
+TitleBox.Position = UDim2.new(0.07, 0, 0.03, 0)
+TitleBox.Size = UDim2.new(0.86, 0, 0.2, 0)
+TitleBox.Font = Enum.Font.GothamBold
+TitleBox.Text = "14Blacked88 Seed Spawner"
+TitleBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleBox.TextScaled = true
+TitleBox.TextStrokeColor3 = Color3.new(0, 0, 0)
+TitleBox.TextStrokeTransparency = 0.3
+TitleBox.TextTransparency = 0
+TitleBox.BorderSizePixel = 0
+
+local titleCorner = Instance.new("UICorner", TitleBox)
+titleCorner.CornerRadius = UDim.new(0, 12)
+
+-- Rainbow title text animation
+task.spawn(function()
+    local i = 1
+    while true do
+        local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
+        local tween = TweenService:Create(TitleBox, tweenInfo, {TextColor3 = rainbowColors[i]})
+        tween:Play()
+        
+        i = i + 1
+        if i > #rainbowColors then
+            i = 1
+        end
+        task.wait(1)
+    end
+end)
+
+-- Seed Pack Input
+local packInput = Instance.new("TextBox", Frame)
+packInput.Position = UDim2.new(0.07, 0, 0.3, 0)
+packInput.Size = UDim2.new(0.86, 0, 0.15, 0)
+packInput.PlaceholderText = "Seed Pack Name"
+packInput.Text = ""
+packInput.Font = Enum.Font.Gotham
+packInput.TextSize = 14
+packInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+packInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+packInput.BorderSizePixel = 0
+packInput.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+Instance.new("UICorner", packInput).CornerRadius = UDim.new(0, 8)
+
+-- Seed Name Input
+local seedInput = Instance.new("TextBox", Frame)
+seedInput.Position = UDim2.new(0.07, 0, 0.5, 0)
+seedInput.Size = UDim2.new(0.86, 0, 0.15, 0)
+seedInput.PlaceholderText = "Seed Name"
+seedInput.Text = ""
+seedInput.Font = Enum.Font.Gotham
+seedInput.TextSize = 14
+seedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+seedInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+seedInput.BorderSizePixel = 0
+seedInput.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+Instance.new("UICorner", seedInput).CornerRadius = UDim.new(0, 8)
+
+-- Open Button
+local Button = Instance.new("TextButton", Frame)
+Button.Position = UDim2.new(0.07, 0, 0.7, 0)
+Button.Size = UDim2.new(0.86, 0, 0.2, 0)
+Button.Text = "SPAWN SEED"
+Button.Font = Enum.Font.GothamBold
+Button.TextSize = 20
+Button.TextColor3 = Color3.new(1, 1, 1)
+Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Button.BorderSizePixel = 0
+Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 12)
+
+-- Rainbow button animation
+task.spawn(function()
+    local i = 1
+    while true do
+        local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
+        local tween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = rainbowColors[i]})
+        tween:Play()
+        
+        i = i + 1
+        if i > #rainbowColors then
+            i = 1
+        end
+        task.wait(1)
+    end
+end)
+
+-- Open Logic
+Button.MouseButton1Click:Connect(function()
+    local packName = packInput.Text
+    local seedName = seedInput.Text
+
+    local pack = SeedPackData.Packs[packName]
+    if not pack then
+        Button.Text = "INVALID PACK"
+        Button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        task.wait(1.5)
+        Button.Text = "SPAWN SEED"
+        return
+    end
+
+    local index = nil
+    for i, item in ipairs(pack.Items) do
+        if item.Name == seedName or item.RewardId == seedName then
+            index = i
+            break
+        end
+    end
+
+    if not index then
+        Button.Text = "SEED NOT FOUND"
+        Button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        task.wait(1.5)
+        Button.Text = "SPAWN SEED"
+        return
+    end
+
+    -- Do the spin
+    SeedPackController:Spin({
+        seedPackType = packName,
+        resultIndex = index
+    })
+
+    Button.Text = "SEED SPAWNED!"
+    Button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    task.wait(1.2)
+    Button.Text = "SPAWN SEED"
+end)
